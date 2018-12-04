@@ -7,9 +7,7 @@ https://github.com/deadcheat/cloverleaf
 
 #### Usage
 ```bash 
-// using golang test to generate coverprofile
-$ go test -v -coverprofile=c.out -covermode=atomic -cover  ./...
-// convert c.out to clover format
+// generate coverprofile = c.out and clover.xml
 $ goclover -f c.out -o clover.xml
 
 ```
@@ -33,10 +31,24 @@ $ goclover -f c.out -o clover.xml
 
 ```
 
-### limitations:
+#### Notice
 ```
-
-Source code must place at $GOPATH/src
+TODO 
+Current version didn't correct fill 
+Methods ,CoverMethods,Statements,CoverStatements,Elements,Coveredelements, 
+base on openCLover formual http://openclover.org/doc/manual/4.2.0/faq--how-are-coverage-percentages-calculated.html 
+// TPC = (BT + BF + SC + MC)/(2*B + S + M) * 100%
+//
+// where
+//
+// BT - branches that evaluated to "true" at least once
+// BF - branches that evaluated to "false" at least once
+// SC - statements covered
+// MC - methods entered
+//
+// B - total number of branches
+// S - total number of statements
+// M - total number of methods
 ```
 
 
