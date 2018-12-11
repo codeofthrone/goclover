@@ -5,6 +5,14 @@ https://github.com/warmans/golocc
 and 
 https://github.com/deadcheat/cloverleaf
 
+#### Install
+```bash 
+$ go get gopkg.in/codeofthrone/goclover.v1
+
+```
+
+
+
 #### Usage
 ```bash 
 // generate coverprofile = c.out and clover.xml
