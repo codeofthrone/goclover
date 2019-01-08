@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"encoding/xml"
 	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -16,8 +14,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"sync"
-	"syscall"
 	"time"
 
 	"github.com/codeofthrone/goclover/cover"
@@ -161,47 +157,6 @@ func ConvertProfilesToClover(profs []*cover.Profile) (*clover.Coverage, error) {
 	return c, nil
 }
 
-func consume(wg *sync.WaitGroup, r io.Reader) {
-	defer wg.Done()
-	reader := bufio.NewReader(r)
-	for {
-		l, _, err := reader.ReadLine()
-		if err == io.EOF {
-			return
-		}
-		if err != nil {
-			log.Print(err)
-			return
-		}
-		fmt.Println(string(l))
-	}
-}
-
-func gotest(args []string) int {
-	var wg sync.WaitGroup
-	wg.Add(1)
-	defer wg.Wait()
-
-	r, w := io.Pipe()
-	defer w.Close()
-
-	args = append([]string{"test"}, args...)
-	cmd := exec.Command("go", args...)
-	cmd.Stderr = w
-	cmd.Stdout = w
-	cmd.Env = os.Environ()
-
-	go consume(&wg, r)
-
-	if err := cmd.Run(); err != nil {
-		if ws, ok := cmd.ProcessState.Sys().(syscall.WaitStatus); ok {
-			return ws.ExitStatus()
-		}
-		return 1
-	}
-	return 0
-}
-
 func gotool(args []string) {
 	cmd := exec.Command("go", args...)
 	stdout, err := cmd.StdoutPipe()
@@ -236,9 +191,7 @@ func main() {
 	flag.StringVar(&rp, "o", "clover.xml", "clover XML save to file name")
 	flag.Parse()
 
-	testcmds := []string{"-v", "-coverprofile=" + fp, "-covermode=atomic", "./..."}
 	totalcmds := []string{"tool", "cover", "-func=" + fp}
-	gotest(testcmds)
 	gotool(totalcmds)
 
 	files, err := filepath.Glob(fp)
