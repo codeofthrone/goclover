@@ -7,7 +7,7 @@ https://github.com/deadcheat/cloverleaf
 
 #### Install
 ```bash 
-$ go get gopkg.in/codeofthrone/goclover.v1
+$ go get gopkg.in/codeofthrone/goclover.v2
 
 ```
 
