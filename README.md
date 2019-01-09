@@ -5,12 +5,12 @@ https://github.com/warmans/golocc
 and 
 https://github.com/deadcheat/cloverleaf
 
+Current process will only convert go test coverprofile to clover.xml 
+
 #### Install
 ```bash 
-$ go get gopkg.in/codeofthrone/goclover.v2
-
+$ go get github.com/codeofthrone/goclover
 ```
-
 
 
 #### Usage
