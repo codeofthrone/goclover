@@ -2,8 +2,6 @@ package metrics
 
 import (
 	"bufio"
-	"go/ast"
-	"go/parser"
 	"go/token"
 	"io"
 	"log"
@@ -60,12 +58,6 @@ func (p *Parser) ParsePackages(packageSpec []string) *Result {
 
 			res.Package++
 
-			fullpac := os.Getenv("GOPATH") + "/src/" + pac
-			d, err := parser.ParseDir(fset, fullpac, nil, parser.ParseComments)
-			if err != nil {
-				log.Fatal(err)
-			}
-
 			//count up lines
 			fset.Iterate(func(file *token.File) bool {
 				loc, cloc, assertions := p.CountLOC(file.Name())
@@ -75,25 +67,6 @@ func (p *Parser) ParsePackages(packageSpec []string) *Result {
 				res.Assertion += assertions
 				return true
 			})
-
-			//setup visitors
-			var visitors []AstVisitor
-			visitors = append(
-				visitors,
-				&TypeVisitor{res: res},
-				&FuncVisitor{res: res, fset: fset},
-				&ImportVisitor{res: res},
-				&FlowControlVisitor{res: res})
-
-			//count entities
-			for _, pkg := range d {
-				ast.Inspect(pkg, func(n ast.Node) bool {
-					for _, vis := range visitors {
-						vis.Visit(n)
-					}
-					return true
-				})
-			}
 		}
 	}
 	return res
